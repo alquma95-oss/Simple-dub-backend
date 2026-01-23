@@ -1,47 +1,50 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
-import requests
-import uuid
-import os
+from pydantic import BaseModel, HttpUrl
 
-app = FastAPI()
+app = FastAPI(
+    title="Simple Dub Backend",
+    description="Phase-1 backend for testing audio/video dubbing flow",
+    version="2.0"
+)
 
-AUDIO_DIR = "audio_files"
-os.makedirs(AUDIO_DIR, exist_ok=True)
-
+# ---------- Request Model ----------
 class TranslateRequest(BaseModel):
-    video_url: str
+    video_url: HttpUrl
     language: str
 
+
+# ---------- Health Check ----------
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "message": "Simple Dub Backend is running"
+    }
+
+
+# ---------- Translate API ----------
 @app.post("/translate")
 def translate(req: TranslateRequest):
-    try:
-        r = requests.get(req.video_url, timeout=30)
-        if r.status_code != 200:
-            raise HTTPException(status_code=400, detail="Audio download failed")
+    # Step 1: Validate language
+    supported_languages = ["en", "hi", "ur"]
+    if req.language not in supported_languages:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported language: {req.language}"
+        )
 
-        file_id = f"{uuid.uuid4()}.mp3"
-        file_path = os.path.join(AUDIO_DIR, file_id)
+    # Step 2: Validate file type (basic safety)
+    if not req.video_url.lower().endswith((".mp3", ".wav", ".mp4")):
+        raise HTTPException(
+            status_code=400,
+            detail="Only mp3, wav, or mp4 URLs are supported in v2"
+        )
 
-        with open(file_path, "wb") as f:
-            f.write(r.content)
-
-        return {
-            "status": "success",
-            "audio_url": f"/audio/{file_id}",
-            "language": req.language
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/audio/{filename}")
-def get_audio(filename: str):
-    file_path = os.path.join(AUDIO_DIR, filename)
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Audio not found")
-
-    return FileResponse(file_path, media_type="audio/mpeg")
+    # Step 3: MOCK dubbing response (intentional)
+    return {
+        "status": "success",
+        "audio_url": str(req.video_url),
+        "language": req.language,
+        "note": "This is a mock response. Real dubbing will be added in v3."
+    }
     
