@@ -45,23 +45,22 @@ def translate(req: TranslateRequest):
             detail="Only mp3, wav, or mp4 URLs are supported in v2"
         )
 
-    # Step 3: Create dummy output file (mock audio)
+    # Step 3: Create dummy output file
+    os.makedirs("files", exist_ok=True)
 
-os.makedirs("files", exist_ok=True)
+    file_id = str(uuid.uuid4())
+    output_filename = f"{file_id}.mp3"
+    output_path = os.path.join("files", output_filename)
 
-file_id = str(uuid.uuid4())
-output_filename = f"{file_id}.mp3"
-output_path = os.path.join("files", output_filename)
+    with open(output_path, "wb") as f:
+        f.write(b"")
 
-with open(output_path, "wb") as f:
-    f.write(b"")
+    public_audio_url = f"/files/{output_filename}"
 
-public_audio_url = f"/files/{output_filename}"
-
-return {
-    "status": "success",
-    "audio_url": public_audio_url,
-    "language": req.language,
-    "note": "Mock audio generated. Real dubbing will be added in next phase."
-}
-    
+    return {
+        "status": "success",
+        "audio_url": public_audio_url,
+        "language": req.language,
+        "note": "Mock audio generated. Real dubbing will be added in next phase."
+    }
+      
