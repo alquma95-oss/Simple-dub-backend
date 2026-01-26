@@ -5,6 +5,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl
 
+BASE_DIR = "/tmp/files"
+os.makedirs(BASE_DIR, exist_ok=True)
+
 app = FastAPI(
     title="Simple Dub Backend",
     description="Phase-1 backend for testing audio/video dubbing flow",
@@ -46,9 +49,6 @@ def translate(req: TranslateRequest):
         )
 
     # Step 3: Create dummy output file (mock audio)
-
-    BASE_DIR = "/tmp/files"
-    os.makedirs(BASE_DIR, exist_ok=True)
 
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
