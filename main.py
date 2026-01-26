@@ -10,7 +10,7 @@ app = FastAPI(
     description="Phase-1 backend for testing audio/video dubbing flow",
     version="2.0"
 )
-app.mount("/files", StaticFiles(directory="files"), name="files")
+app.mount("/files", StaticFiles(directory="/tmp/files"), name="files")
 
 # ---------- Request Model ----------
 class TranslateRequest(BaseModel):
@@ -45,12 +45,14 @@ def translate(req: TranslateRequest):
             detail="Only mp3, wav, or mp4 URLs are supported in v2"
         )
 
-    # Step 3: Create dummy output file
-    os.makedirs("files", exist_ok=True)
+    # Step 3: Create dummy output file (mock audio)
+
+    BASE_DIR = "/tmp/files"
+    os.makedirs(BASE_DIR, exist_ok=True)
 
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
-    output_path = os.path.join("files", output_filename)
+    output_path = os.path.join(BASE_DIR, output_filename)
 
     with open(output_path, "wb") as f:
         f.write(b"")
