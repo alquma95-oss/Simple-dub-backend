@@ -2,6 +2,7 @@ import uuid
 import os
 from fastapi.responses import FileResponse
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl
 
 app = FastAPI(
@@ -9,6 +10,7 @@ app = FastAPI(
     description="Phase-1 backend for testing audio/video dubbing flow",
     version="2.0"
 )
+app.mount("/files", StaticFiles(directory="files"), name="files")
 
 # ---------- Request Model ----------
 class TranslateRequest(BaseModel):
