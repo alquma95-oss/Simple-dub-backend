@@ -42,7 +42,9 @@ def translate(req: TranslateRequest):
         )
 
     # Step 2: Validate file type (basic safety)
-    if not req.video_url.lower().endswith((".mp3", ".wav", ".mp4")):
+    video_url_str = str(req.video_url)
+
+    if not video_url_str.lower().endswith((".mp3", ".wav", ".mp4")):
         raise HTTPException(
             status_code=400,
             detail="Only mp3, wav, or mp4 URLs are supported in v2"
