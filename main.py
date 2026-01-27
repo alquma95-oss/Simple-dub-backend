@@ -60,12 +60,14 @@ def translate(req: TranslateRequest):
      output_filename = f"{file_id}.mp3"
      output_path = os.path.join(BASE_DIR, output_filename)
 
-     with client.audio.speech.with_streaming_response.create(
+     audio = client.audio.speech.create(
          model="gpt-4o-mini-tts",
          voice="alloy",
-         input=text_to_speak,
-     ) as response:
-         response.stream_to_file(output_path)
+         input=text_to_speak
+     )
+
+     with open(output_path, "wb") as f:
+         f.write(audio if isinstance(audio, (bytes, bytearray)) else audio.read())
 
      public_audio_url = f"/files/{output_filename}"
 
