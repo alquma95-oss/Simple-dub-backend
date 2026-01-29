@@ -49,13 +49,20 @@ def translate(req: TranslateRequest):
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
 
-    # Step 3: Dummy audio generation
+    # Step 3: Generate real audio using Google gTTS (FREE)
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
     output_path = os.path.join(BASE_DIR, output_filename)
 
-    with open(output_path, "wb") as f:
-        f.write(b"Dummy audio file for Phase-1 testing")
+    text_to_speak = "Hello, this is a test voice generated using Google TTS."
+
+    tts = gTTS(
+        text=text_to_speak,
+        lang=req.language,
+        slow=False
+    )
+
+    tts.save(output_path)
 
     public_audio_url = f"/files/{output_filename}"
 
