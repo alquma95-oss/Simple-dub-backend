@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
+from deep_translator import GoogleTranslator
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -50,9 +51,12 @@ def translate(req: TranslateRequest):
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
         
-    # Step 4: Translate non-English text to English (placeholder)
+    # Step 4: Translate non-English text to English (REAL)
     if req.language != "en":
-        translated_text = req.text  # TODO: real translation will be added in next phase
+        translated_text = GoogleTranslator(
+            source="auto",
+            target="en"
+        ).translate(req.text)
         final_language = "en"
     else:
         translated_text = req.text
