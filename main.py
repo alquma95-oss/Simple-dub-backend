@@ -21,7 +21,7 @@ class TranslateRequest(BaseModel):
     video_url: HttpUrl
     language: str
     text: str
-
+    mode: str  # "audio" or "video"
 
 # ---------- Health Check ----------
 @app.get("/")
@@ -42,7 +42,7 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail=f"Unsupported language: {req.language}"
         )
-
+    
     # Step 2: Validate file type
     video_url_str = str(req.video_url)
     if not video_url_str.lower().endswith((".mp3", ".wav", ".mp4")):
@@ -50,6 +50,12 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
+    # Phase-3 Step-1: mode validation
+    if req.mode not in ["audio", "video"]:
+        raise HTTPException(
+            status_code=400,
+            detail="mode must be 'audio' or 'video'"
+        )   
         
     # Step 4: Translate non-English text to English (REAL)
     if req.language != "en":
