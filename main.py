@@ -51,22 +51,24 @@ def translate(req: TranslateRequest):
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
         
-    # Step 3.1: Decide text for TTS
-    if req.language == "en":
-        text_for_tts = req.text
+    # Step 4: Translate non-English text to English (placeholder)
+    if req.language != "en":
+        translated_text = req.text  # TODO: real translation will be added in next phase
+        final_language = "en"
     else:
-        text_for_tts = req.text  # placeholder, translation will come in next step
+        translated_text = req.text
+        final_language = "en"
         
     # Step 3: Generate real audio using Google gTTS (FREE)
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
     output_path = os.path.join(BASE_DIR, output_filename)
 
-    text_to_speak = text_for_tts
+    text_to_speak = translated_text
 
     tts = gTTS(
         text=text_to_speak,
-        lang=req.language,
+        lang=final_language
         slow=False
     )
 
@@ -77,6 +79,7 @@ def translate(req: TranslateRequest):
     return {
         "status": "success",
         "audio_url": public_audio_url,
-        "language": req.language,
-        "note": "Dummy audio generated (Phase-1, no OpenAI)"
+        "input_language": req.language,
+        "output_language": final_language,
+        "note": "Phase-2: non-English text translated to English (placeholder)"
     }
