@@ -50,13 +50,19 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
-
+        
+    # Step 3.1: Decide text for TTS
+    if req.language == "en":
+        text_for_tts = req.text
+    else:
+        text_for_tts = req.text  # placeholder, translation will come in next step
+        
     # Step 3: Generate real audio using Google gTTS (FREE)
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
     output_path = os.path.join(BASE_DIR, output_filename)
 
-    text_to_speak = req.text
+    text_to_speak = text_for_tts
 
     tts = gTTS(
         text=text_to_speak,
