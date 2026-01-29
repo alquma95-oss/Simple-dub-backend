@@ -68,7 +68,7 @@ def translate(req: TranslateRequest):
 
     tts = gTTS(
         text=text_to_speak,
-        lang=final_language
+        lang=final_language,
         slow=False
     )
 
