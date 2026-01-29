@@ -1,9 +1,9 @@
 import uuid
 import os
-from fastapi.responses import FileResponse
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl
+from gtts import gTTS
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -34,7 +34,7 @@ def root():
 @app.post("/translate")
 def translate(req: TranslateRequest):
     # Step 1: Validate language
-    supported_languages = ["en", "hi", "ur"]
+    supported_languages = ["en", "hi"]
     if req.language not in supported_languages:
         raise HTTPException(
             status_code=400,
