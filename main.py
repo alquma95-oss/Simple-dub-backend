@@ -1,7 +1,7 @@
 import uuid
 import os
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
 
@@ -13,7 +13,6 @@ app = FastAPI(
     description="Phase-1 backend for testing audio/video dubbing flow",
     version="2.0"
 )
-app.mount("/files", StaticFiles(directory="/tmp/files"), name="files")
 
 # ---------- Request Model ----------
 
@@ -74,12 +73,8 @@ def translate(req: TranslateRequest):
 
     tts.save(output_path)
 
-    public_audio_url = f"/files/{output_filename}"
-
-    return {
-        "status": "success",
-        "audio_url": public_audio_url,
-        "input_language": req.language,
-        "output_language": final_language,
-        "note": "Phase-2: non-English text translated to English (placeholder)"
-    }
+    return FileResponse(
+        path=output_path,
+        media_type="audio/mpeg",
+        filename=output_filename
+    )
