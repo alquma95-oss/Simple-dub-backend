@@ -16,9 +16,11 @@ app = FastAPI(
 app.mount("/files", StaticFiles(directory="/tmp/files"), name="files")
 
 # ---------- Request Model ----------
+
 class TranslateRequest(BaseModel):
     video_url: HttpUrl
     language: str
+    text: str
 
 
 # ---------- Health Check ----------
@@ -54,7 +56,7 @@ def translate(req: TranslateRequest):
     output_filename = f"{file_id}.mp3"
     output_path = os.path.join(BASE_DIR, output_filename)
 
-    text_to_speak = "Hello, this is a test voice generated using Google TTS."
+    text_to_speak = req.text
 
     tts = gTTS(
         text=text_to_speak,
