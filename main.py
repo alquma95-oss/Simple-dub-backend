@@ -98,23 +98,32 @@ def translate(req: TranslateRequest):
              check=True 
          ) 
 
-    elif req.mode == "audio":
+    elif req.mode == "audio"
 
     return {
         "status": "success",
         "audio_path": audio_path
     }
         
-    # Step 4: Translate non-English text to English (REAL)
-    if req.language != "en":
+    # Phase-3 Step-4: Translate text to English (AUDIO only)
+
+translated_text = req.text
+final_language = "en"
+
+if req.mode == "audio" and req.language != "en":
+    try:
         translated_text = GoogleTranslator(
-            source="auto",
+            source=req.language,
             target="en"
         ).translate(req.text)
+
         final_language = "en"
-    else:
-        translated_text = req.text
-        final_language = "en"
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Translation failed: {str(e)}"
+        )
      if req.mode == "audio":
     final_text = translated_text  # jo translate hua hai
 
