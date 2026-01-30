@@ -58,6 +58,19 @@ def translate(req: TranslateRequest):
             detail="mode must be 'audio' or 'video'"
         )   
 
+    # Phase-3 Step-4: Translate text to English (AUDIO only)
+    translated_text = req.text
+    if req.mode == "audio" and req.language != "en":
+        try:
+           from googletrans import Translator
+           translator = Translator()
+           translated_text = translator.translate(req.text, dest="en").text
+       except Exception as e:
+           raise HTTPException(
+               status_code=500,
+               detail=f"Translation failed: {str(e)}"
+           )
+
     # Phase-3 Step-3: download video and extract audio
     if req.mode == "video":
         file_id = str(uuid.uuid4())
