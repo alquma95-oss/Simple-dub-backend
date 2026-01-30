@@ -97,12 +97,6 @@ def translate(req: TranslateRequest):
              ],
              check=True 
          ) 
-
-    elif req.mode == "audio":
-    return {
-        "status": "success",
-        "audio_path": audio_path
-    }
         
     # Phase-3 Step-4: Translate text to English (AUDIO only)
 
