@@ -98,8 +98,7 @@ def translate(req: TranslateRequest):
              check=True 
          ) 
 
-    elif req.mode == "audio"
-
+    elif req.mode == "audio":
     return {
         "status": "success",
         "audio_path": audio_path
