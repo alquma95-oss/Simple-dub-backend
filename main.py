@@ -1,5 +1,6 @@
 import uuid
 import os
+import subprocess
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
