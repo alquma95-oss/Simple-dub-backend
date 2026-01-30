@@ -57,12 +57,37 @@ def translate(req: TranslateRequest):
             detail="mode must be 'audio' or 'video'"
         )   
 
-    # Phase-3 Step-2: video handling skeleton
+    # Phase-3 Step-3: download video and extract audio
     if req.mode == "video":
-        # TODO: download video from URL
-        # TODO: extract audio using ffmpeg
-        # TODO: replace audio with generated TTS
-        pass
+        video_path = "/tmp/input_video.mp4"
+        audio_path = "/tmp/extracted_audio.wav"
+
+       # Download video
+       subprocess.run(
+           ["curl", "-L", req.video_url, "-o", video_path],
+           check=True
+       )
+
+       # Extract audio using ffmpeg
+       subprocess.run(
+           [
+               "ffmpeg",
+               "-y",
+               "-i", video_path,
+               "-vn",
+               "-acodec", "pcm_s16le",
+               "-ar", "44100",
+               "-ac", "2",
+               audio_path
+           ],
+           check=True
+        )
+
+        return {
+            "status": "success",
+            "message": "Audio extracted from video successfully",
+            "audio_path": audio_path
+        }
         
     # Step 4: Translate non-English text to English (REAL)
     if req.language != "en":
