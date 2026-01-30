@@ -99,7 +99,6 @@ def translate(req: TranslateRequest):
          ) 
 
     elif req.mode == "audio":
-        audio_path = req.video_url  # placeholder for audio input
 
     return {
         "status": "success",
@@ -116,7 +115,27 @@ def translate(req: TranslateRequest):
     else:
         translated_text = req.text
         final_language = "en"
-        
+     if req.mode == "audio":
+    final_text = translated_text  # jo translate hua hai
+
+    file_id = str(uuid.uuid4())
+    output_filename = f"{file_id}.mp3"
+    output_path = os.path.join(BASE_DIR, output_filename)
+
+    tts = gTTS(
+        text=final_text,
+        lang="en",
+        slow=False
+    )
+    tts.save(output_path)
+
+    return {
+        "status": "success",
+        "audio_url": f"/files/{output_filename}",
+        "input_language": req.language,
+        "output_language": "en"
+    }
+
     # Step 3: Generate real audio using Google gTTS (FREE)
     file_id = str(uuid.uuid4())
     output_filename = f"{file_id}.mp3"
