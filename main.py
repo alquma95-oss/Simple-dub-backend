@@ -1,6 +1,6 @@
-import uuid
-import os
 import subprocess
+import os
+import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
@@ -60,35 +60,36 @@ def translate(req: TranslateRequest):
 
     # Phase-3 Step-3: download video and extract audio
     if req.mode == "video":
-        video_path = "/tmp/input_video.mp4"
-        audio_path = "/tmp/extracted_audio.wav"
+        file_id = str(uuid.uuid4())
+        video_path = f"/tmp/{file_id}.mp4"
+        audio_path = f"/tmp/{file_id}.wav"
 
-       # Download video
-       subprocess.run(
-           ["curl", "-L", req.video_url, "-o", video_path],
-           check=True
-       )
-
-       # Extract audio using ffmpeg
-       subprocess.run(
-           [
-               "ffmpeg",
-               "-y",
-               "-i", video_path,
-               "-vn",
-               "-acodec", "pcm_s16le",
-               "-ar", "44100",
-               "-ac", "2",
-               audio_path
-           ],
-           check=True
+        subprocess.run(
+            ["curl", "-L", req.video_url, "-o", video_path],
+            check=True
         )
 
-        return {
-            "status": "success",
-            "message": "Audio extracted from video successfully",
-            "audio_path": audio_path
-        }
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-i", video_path,
+                "-vn",
+                "-acodec", "pcm_s16le",
+                "-ar", "44100",
+                "-ac", "2",
+                audio_path
+             ],
+             check=True 
+         ) 
+
+    elif req.mode == "audio":
+        audio_path = req.video_url  # placeholder for audio input
+
+    return {
+        "status": "success",
+        "audio_path": audio_path
+    }
         
     # Step 4: Translate non-English text to English (REAL)
     if req.language != "en":
