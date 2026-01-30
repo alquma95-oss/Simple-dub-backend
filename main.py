@@ -56,6 +56,13 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="mode must be 'audio' or 'video'"
         )   
+
+    # Phase-3 Step-2: video handling skeleton
+    if req.mode == "video":
+        # TODO: download video from URL
+        # TODO: extract audio using ffmpeg
+        # TODO: replace audio with generated TTS
+        pass
         
     # Step 4: Translate non-English text to English (REAL)
     if req.language != "en":
