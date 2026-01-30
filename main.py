@@ -62,11 +62,13 @@ def translate(req: TranslateRequest):
     translated_text = req.text
     if req.mode == "audio" and req.language != "en":
         try:
-           from googletrans import Translator
-           translator = Translator()
-           translated_text = translator.translate(req.text, dest="en").text
-       except Exception as e:
-           raise HTTPException(
+            from deep_translator import GoogleTranslator
+            translated_text = GoogleTranslator(
+                source=req.language,
+                target="en"
+            ).translate(req.text)
+        except Exception as e:
+            raise HTTPException(
                status_code=500,
                detail=f"Translation failed: {str(e)}"
            )
