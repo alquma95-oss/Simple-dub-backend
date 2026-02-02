@@ -34,7 +34,12 @@ def root():
 
 @app.post("/translate")
 def translate(req: TranslateRequest):
-
+    if req.mode not in ["audio", "video"]:
+    raise HTTPException(
+        status_code=400,
+        detail="mode must be 'audio' or 'video'"
+    )
+    
     if req.mode == "audio":
         return {
             "status": "ok",
