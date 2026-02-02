@@ -18,7 +18,7 @@ app = FastAPI(
 )
 
 whisper_model = WhisperModel(
-    "small",
+    "tiny",
     device="cpu",
     compute_type="int8"
 )
