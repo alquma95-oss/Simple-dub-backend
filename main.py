@@ -40,7 +40,15 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="mode must be 'audio' or 'video'"
         )
-    
+
+    # Phase-3 Step-2: validate file type
+    video_url_str = str(req.video_url)
+
+    if not video_url_str.lower().endswith((".mp3", ".wav", ".mp4")):
+        raise HTTPException(
+            status_code=400,
+            detail="Only mp3, wav, or mp4 URLs are supported"
+        )
     if req.mode == "audio":
         return {
             "status": "ok",
