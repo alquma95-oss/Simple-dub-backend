@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
 from deep_translator import GoogleTranslator
+from faster_whisper import WhisperModel
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -16,6 +17,11 @@ app = FastAPI(
     version="2.0"
 )
 
+whisper_model = WhisperModel(
+    "small",
+    device="cpu",
+    compute_type="int8"
+)
 # ---------- Request Model ----------
 
 class TranslateRequest(BaseModel):
@@ -49,11 +55,6 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="Only mp3, wav, or mp4 URLs are supported"
         )
-    if req.mode == "audio":
-        return {
-            "status": "ok",
-            "step": "audio mode detected"
-        }
 
     # Phase-3 Step-3: download video and extract audio
     if req.mode == "video":
@@ -81,8 +82,26 @@ def translate(req: TranslateRequest):
             ],
             check=True
         )
+        
+    elif req.mode == "audio":
+        file_id = str(uuid.uuid4())
+        audio_path = f"/tmp/{file_id}.wav"
 
-        return {
-            "status": "success",
-            "audio_path": audio_path
-        }
+        subprocess.run(
+            ["curl", "-L", str(req.video_url), "-o", audio_path],
+            check=True
+        )
+segments, info = whisper_model.transcribe(audio_path)
+
+        transcript = ""
+        for segment in segments:
+            transcript += segment.text.strip() + " "
+        transcript = transcript.strip()
+    
+            return {
+                "status": "success",
+                "transcript": transcript
+            }
+        
+
+    
