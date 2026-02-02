@@ -99,10 +99,10 @@ def translate(req: TranslateRequest):
             transcript += segment.text.strip() + " "
         transcript = transcript.strip()
     
-            return {
-                "status": "success",
-                "transcript": transcript
-            }
+        return {
+            "status": "success",
+            "transcript": transcript
+        }
         
 
     
