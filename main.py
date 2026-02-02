@@ -55,8 +55,34 @@ def translate(req: TranslateRequest):
             "step": "audio mode detected"
         }
 
-    elif req.mode == "video":
+    # Phase-3 Step-3: download video and extract audio
+    if req.mode == "video":
+        file_id = str(uuid.uuid4())
+        video_path = f"/tmp/{file_id}.mp4"
+        audio_path = f"/tmp/{file_id}.wav"
+
+        # Download video
+        subprocess.run(
+            ["curl", "-L", str(req.video_url), "-o", video_path],
+            check=True
+        )
+
+        # Extract audio using ffmpeg
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-i", video_path,
+                "-vn",
+                "-acodec", "pcm_s16le",
+                "-ar", "44100",
+                "-ac", "2",
+                audio_path
+            ],
+            check=True
+        )
+
         return {
-            "status": "ok",
-            "step": "video mode detected"
+            "status": "success",
+            "audio_path": audio_path
         }
