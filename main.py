@@ -31,10 +31,18 @@ def root():
         "status": "ok",
         "message": "Simple Dub Backend is running"
     }
+
 @app.post("/translate")
 def translate(req: TranslateRequest):
-    return {
-        "status": "ok",
-        "message": "translate endpoint reset"
-    }
 
+    if req.mode == "audio":
+        return {
+            "status": "ok",
+            "step": "audio mode detected"
+        }
+
+    elif req.mode == "video":
+        return {
+            "status": "ok",
+            "step": "video mode detected"
+        }
