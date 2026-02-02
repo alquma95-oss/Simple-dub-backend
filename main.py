@@ -91,7 +91,8 @@ def translate(req: TranslateRequest):
             ["curl", "-L", str(req.video_url), "-o", audio_path],
             check=True
         )
-segments, info = whisper_model.transcribe(audio_path)
+        
+        segments, info = whisper_model.transcribe(audio_path)
 
         transcript = ""
         for segment in segments:
