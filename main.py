@@ -97,8 +97,9 @@ def translate(req: TranslateRequest):
         transcript = ""
         for segment in segments:
             transcript += segment.text.strip() + " "
+        
         transcript = transcript.strip()
-    
+
         return {
             "status": "success",
             "transcript": transcript
