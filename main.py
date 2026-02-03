@@ -92,8 +92,23 @@ def translate(req: TranslateRequest):
             ["curl", "-L", str(req.video_url), "-o", audio_path],
             check=True
         )
-        
-    segments, info = whisper_model.transcribe(audio_path)
+     # HARD LIMIT: first 20 seconds only (Render-safe)
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-i", audio_path,
+                "-t", "20",
+                audio_path
+            ],
+            check=True
+        ) 
+    
+    segments, info = whisper_model.transcribe(
+        audio_path,
+        language=req.language or "en",
+        vad_filter=True
+    )
 
     transcript = ""
     for segment in segments:
