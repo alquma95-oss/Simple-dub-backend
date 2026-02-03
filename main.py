@@ -4,7 +4,7 @@ import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from typing import Optional
-from pydantic import BaseModel, HttpUr1
+from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
 from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
