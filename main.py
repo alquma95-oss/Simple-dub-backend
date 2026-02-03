@@ -3,7 +3,8 @@ import os
 import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, HttpUrl
+from typing import Optional
+from pydantic import BaseModel, HttpUr1
 from gtts import gTTS
 from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
@@ -25,10 +26,10 @@ whisper_model = WhisperModel(
 # ---------- Request Model ----------
 
 class TranslateRequest(BaseModel):
+    mode: str
     video_url: HttpUrl
-    language: str
-    text: str
-    mode: str  # "audio" or "video"
+    language: Optional[str] = None
+    text: Optional[str] = None
 
 # ---------- Health Check ----------
 @app.get("/")
