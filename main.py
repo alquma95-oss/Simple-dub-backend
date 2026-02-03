@@ -92,18 +92,18 @@ def translate(req: TranslateRequest):
             check=True
         )
         
-        segments, info = whisper_model.transcribe(audio_path)
+    segments, info = whisper_model.transcribe(audio_path)
 
-        transcript = ""
-        for segment in segments:
-            transcript += segment.text.strip() + " "
+    transcript = ""
+    for segment in segments:
+        transcript += segment.text.strip() + " "
         
-        transcript = transcript.strip()
+    transcript = transcript.strip()
 
-        return {
-            "status": "success",
-            "transcript": transcript
-        }
+    return {
+        "status": "success",
+        "transcript": transcript
+    }
         
 
     
