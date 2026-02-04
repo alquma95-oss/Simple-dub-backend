@@ -87,7 +87,8 @@ def translate(req: TranslateRequest):
     elif req.mode == "audio":
         file_id = str(uuid.uuid4())
         audio_path = f"/tmp/{file_id}.wav"
-
+        cut_audio_path = f"/tmp/{file_id}_cut.wav"
+        
         subprocess.run(
             ["curl", "-L", str(req.video_url), "-o", audio_path],
             check=True
@@ -99,7 +100,7 @@ def translate(req: TranslateRequest):
                 "-y",
                 "-i", audio_path,
                 "-t", "20",
-                audio_path
+                cut_audio_path
             ],
             check=True
         ) 
