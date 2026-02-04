@@ -124,9 +124,11 @@ def translate(req: TranslateRequest):
            }
             
         except Exception as e:
-           return {
-               "status": "error",
-               "error": str(e)
-           }
+            print("ERROR:", str(e))  # Render logs ke liye
+
+           raise HTTPException(
+               status_code=500,
+               detail=str(e)
+           )
 
     
