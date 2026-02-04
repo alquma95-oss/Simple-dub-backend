@@ -85,42 +85,48 @@ def translate(req: TranslateRequest):
         )
         
     elif req.mode == "audio":
-        file_id = str(uuid.uuid4())
-        audio_path = f"/tmp/{file_id}.wav"
-        cut_audio_path = f"/tmp/{file_id}_cut.wav"
+        try:
+           file_id = str(uuid.uuid4())
+           audio_path = f"/tmp/{file_id}.wav"
+           cut_audio_path = f"/tmp/{file_id}_cut.wav"
         
-        subprocess.run(
-            ["curl", "-L", str(req.video_url), "-o", audio_path],
-            check=True
-        )
+           subprocess.run(
+               ["curl", "-L", str(req.video_url), "-o", audio_path],
+               check=True
+           )
      # HARD LIMIT: first 20 seconds only (Render-safe)
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-i", audio_path,
-                "-t", "20",
-                cut_audio_path
-            ],
-            check=True
-        ) 
+           subprocess.run(
+               [
+                   "ffmpeg",
+                   "-y",
+                   "-i", audio_path,
+                   "-t", "20",
+                   cut_audio_path
+               ],
+               check=True
+           ) 
     
-    segments, info = whisper_model.transcribe(
-        cut_audio_path,
-        language=req.language or "en",
-        vad_filter=True
-    )
+           segments, info = whisper_model.transcribe(
+               cut_audio_path,
+               language=req.language or "en",
+               vad_filter=False
+           )
 
-    transcript = ""
-    for segment in segments:
-        transcript += segment.text.strip() + " "
+           transcript = ""
+           for segment in segments:
+               transcript += segment.text.strip() + " "
         
-    transcript = transcript.strip()
+           transcript = transcript.strip()
 
-    return {
-        "status": "success",
-        "transcript": transcript
-    }
-        
+           return {
+               "status": "success",
+               "transcript": transcript
+           }
+            
+       except Exception as e:
+           return {
+               "status": "error",
+               "error": str(e)
+           }
 
     
