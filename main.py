@@ -106,7 +106,7 @@ def translate(req: TranslateRequest):
         ) 
     
     segments, info = whisper_model.transcribe(
-        audio_path,
+        cut_audio_path,
         language=req.language or "en",
         vad_filter=True
     )
