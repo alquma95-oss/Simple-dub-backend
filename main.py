@@ -8,6 +8,7 @@ from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
 from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
+from transactions import create_transaction
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -118,6 +119,7 @@ def translate(req: TranslateRequest):
         
            transcript = transcript.strip()
 
+           
            target_lang = req.language or "en"
 
            translated_text = GoogleTranslator(
@@ -125,8 +127,17 @@ def translate(req: TranslateRequest):
                target=target_lang
            ).translate(transcript)
             
+           transaction = create_transaction(
+               mode=req.mode,
+               source_url=str(req.video_url),
+               language=target_lang,
+               status="success",
+               transcript=translated_text
+           )
+            
            return {
                "status": "success",
+               "transaction": transaction,
                "transcript": transcript,
                "translated_text": translated_text,
                "language": target_lang
