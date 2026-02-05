@@ -118,11 +118,20 @@ def translate(req: TranslateRequest):
         
            transcript = transcript.strip()
 
+           target_lang = req.language or "en"
+
+           translated_text = GoogleTranslator(
+               source="auto",
+               target=target_lang
+           ).translate(transcript)
+            
            return {
                "status": "success",
-               "transcript": transcript
-           }
-            
+               "transcript": transcript,
+               "translated_text": translated_text,
+               "language": target_lang
+           } 
+              
        except Exception as e:
            print("ERROR:", str(e))
            raise HTTPException(
