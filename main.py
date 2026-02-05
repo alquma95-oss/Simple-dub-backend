@@ -132,7 +132,7 @@ def translate(req: TranslateRequest):
                "language": target_lang
            } 
               
-       except Exception as e:
+        except Exception as e:
            print("ERROR:", str(e))
            raise HTTPException(
                status_code=500,
