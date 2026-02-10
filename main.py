@@ -9,6 +9,8 @@ from gtts import gTTS
 from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
 from transactions import create_transaction
+from transactions import TRANSACTIONS
+from fastapi import HTTPException
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -48,7 +50,7 @@ def translate(req: TranslateRequest):
             status_code=400,
             detail="mode must be 'audio' or 'video'"
         )
-
+        
     # Phase-3 Step-2: validate file type
     video_url_str = str(req.video_url)
 
@@ -150,5 +152,18 @@ def translate(req: TranslateRequest):
                detail=str(e)
            )
 
+@app.get("/transactions")
+def list_transactions():
+    return {
+        "count": len(TRANSACTIONS),
+        "transactions": list(TRANSACTIONS.values())
+    }
+@app.get("/transactions/{transaction_id}")
+def get_transaction(transaction_id: str):
+    transaction = TRANSACTIONS.get(transaction_id)
 
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    return transaction
 
