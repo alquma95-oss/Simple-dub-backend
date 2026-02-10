@@ -3,6 +3,7 @@ import os
 import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from typing import Optional
 from pydantic import BaseModel, HttpUrl
 from gtts import gTTS
@@ -10,10 +11,6 @@ from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
 from transactions import create_transaction
 from transactions import TRANSACTIONS
-from fastapi import HTTPException
-from fastapi.staticfiles import StaticFiles
-
-app.mount("/files", StaticFiles(directory="files"), name="files")
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -23,6 +20,7 @@ app = FastAPI(
     description="Phase-1 backend for testing audio/video dubbing flow",
     version="2.0"
 )
+app.mount("/files", StaticFiles(directory=BASE_DIR), name="files")
 
 whisper_model = WhisperModel(
     "tiny",
