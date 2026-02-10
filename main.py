@@ -12,6 +12,7 @@ from transactions import create_transaction
 from transactions import TRANSACTIONS
 from fastapi import HTTPException
 from fastapi.staticfiles import StaticFiles
+
 app.mount("/files", StaticFiles(directory="files"), name="files")
 
 BASE_DIR = "/tmp/files"
