@@ -11,6 +11,7 @@ from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
 from transactions import create_transaction
 from transactions import TRANSACTIONS
+from tts import generate_audio
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -130,6 +131,10 @@ def translate(req: TranslateRequest):
                target=target_lang
            ).translate(transcript)
             
+           audio_path = generate_audio(translated_text, req.language or "en")
+           audio_filename = audio_path.replace("/tmp/files/", "")
+           audio_url = f"/files/{audio_filename}"
+
            transaction = create_transaction(
                mode=req.mode,
                source_url=str(req.video_url),
@@ -144,6 +149,7 @@ def translate(req: TranslateRequest):
                "transcript": transcript,
                "translated_text": translated_text,
                "language": target_lang
+               "audio_url": audio_url
            } 
               
         except Exception as e:
