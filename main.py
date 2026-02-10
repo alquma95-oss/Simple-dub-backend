@@ -11,6 +11,8 @@ from faster_whisper import WhisperModel
 from transactions import create_transaction
 from transactions import TRANSACTIONS
 from fastapi import HTTPException
+from fastapi.staticfiles import StaticFiles
+app.mount("/files", StaticFiles(directory="files"), name="files")
 
 BASE_DIR = "/tmp/files"
 os.makedirs(BASE_DIR, exist_ok=True)
