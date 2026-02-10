@@ -148,7 +148,7 @@ def translate(req: TranslateRequest):
                "transaction": transaction,
                "transcript": transcript,
                "translated_text": translated_text,
-               "language": target_lang
+               "language": target_lang,
                "audio_url": audio_url
            } 
               
