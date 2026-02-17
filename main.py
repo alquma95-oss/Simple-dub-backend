@@ -6,7 +6,6 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from typing import Optional
 from pydantic import BaseModel, HttpUrl
-from gtts import gTTS
 from deep_translator import GoogleTranslator
 from faster_whisper import WhisperModel
 from transactions import create_transaction
