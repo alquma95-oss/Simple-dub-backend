@@ -1,16 +1,21 @@
-from gtts import gTTS
-import uuid
 import os
+from elevenlabs import generate, save, set_api_key
 
-BASE_DIR = "/tmp/files"
-os.makedirs(BASE_DIR, exist_ok=True)
+# Set your API key from environment variable
+set_api_key(os.getenv("ELEVEN_API_KEY"))
 
-def generate_audio(text: str, language: str = "en") -> str:
-    file_id = str(uuid.uuid4())
-    filename = f"{file_id}.mp3"
-    file_path = os.path.join(BASE_DIR, filename)
+def generate_audio(text, language="en"):
+    
+    # Default voice (you can change later)
+    voice_id = "Rachel"
 
-    tts = gTTS(text=text, lang=language)
-    tts.save(file_path)
+    audio = generate(
+        text=text,
+        voice=voice_id,
+        model="eleven_multilingual_v2"
+    )
 
-    return filename
+    file_path = f"/tmp/files/{language}_output.mp3"
+    save(audio, file_path)
+
+    return file_path
