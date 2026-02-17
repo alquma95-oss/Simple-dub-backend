@@ -12,7 +12,7 @@ client = ElevenLabs(api_key=api_key)
 def generate_audio(text, language="en"):
     response = client.text_to_speech.convert(
         voice_id="Rachel",  # You can change later
-        model_id="eleven_multilingual_v2",
+        model="eleven_turbo_v2",
         text=text
     )
 
