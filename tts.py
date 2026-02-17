@@ -2,7 +2,11 @@ import os
 from elevenlabs import generate, save, set_api_key
 
 # Set your API key from environment variable
-set_api_key(os.getenv("ELEVEN_API_KEY"))
+api_key = os.getenv("ELEVEN_API_KEY")
+if not api_key:
+    raise ValueError("ELEVEN_API_KEY not set in environment variables")
+
+set_api_key(api_key)
 
 def generate_audio(text, language="en"):
     
