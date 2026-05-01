@@ -32,7 +32,9 @@ def generate_audio(text, language="en"):
 
         fallback_path = "/tmp/files/fallback.mp3"
 
-        with open(fallback_path, "wb") as f:
-            f.write(b"")
+        from gtts import gTTS
+
+        tts = gTTS(text=text, lang="en")
+        tts.save(fallback_path)
 
         return fallback_path
