@@ -4,3 +4,4 @@ pydantic
 elevenlabs
 deep-translator
 faster-whisper
+gTTS
