@@ -29,7 +29,9 @@ def generate_audio(text, language="en"):
 
     except Exception as e:
         print("TTS FAILED:", str(e))
-
+        
+        os.makedirs("/tmp/files", exist_ok=True)
+        
         fallback_path = "/tmp/files/fallback.mp3"
 
         from gtts import gTTS
